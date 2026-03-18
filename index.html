@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>لعبتنا 💜</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💜</text></svg>">
+</head>
+<body>
+
+<!-- ======== AUTH SCREENS ======== -->
+<div class="screen active" id="s-auth">
+  <div class="auth-bg">
+    <div class="floating-heart h1">💜</div>
+    <div class="floating-heart h2">🌟</div>
+    <div class="floating-heart h3">💫</div>
+  </div>
+  <div class="auth-wrap">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">💜</div>
+      <h1>لعبتنا</h1>
+      <p>العب مع حبيبتك من أي مكان</p>
+    </div>
+    <!-- LOGIN -->
+    <div id="form-login" class="auth-form">
+      <h2>تسجيل الدخول</h2>
+      <input type="text" id="login-user" placeholder="اسم المستخدم" autocomplete="username">
+      <input type="password" id="login-pass" placeholder="كلمة المرور" autocomplete="current-password">
+      <div class="auth-error hidden" id="login-err"></div>
+      <button class="btn-primary" onclick="doLogin()">دخول</button>
+      <p class="auth-switch">ما عندك حساب؟ <span onclick="toggleAuthForm('register')">سجل الحين</span></p>
+    </div>
+    <!-- REGISTER -->
+    <div id="form-register" class="auth-form hidden">
+      <h2>حساب جديد</h2>
+      <div class="avatar-pick">
+        <label>اختر أفاتار</label>
+        <div class="avatar-options" id="avatar-opts">
+          <span class="av-opt selected" data-av="💜">💜</span>
+          <span class="av-opt" data-av="🌙">🌙</span>
+          <span class="av-opt" data-av="⭐">⭐</span>
+          <span class="av-opt" data-av="🦋">🦋</span>
+          <span class="av-opt" data-av="🌸">🌸</span>
+          <span class="av-opt" data-av="🎮">🎮</span>
+          <span class="av-opt" data-av="🔥">🔥</span>
+          <span class="av-opt" data-av="🐱">🐱</span>
+        </div>
+      </div>
+      <input type="text" id="reg-display" placeholder="اسمك (يظهر للثاني)" maxlength="15">
+      <input type="text" id="reg-user" placeholder="اسم المستخدم" maxlength="20" autocomplete="username">
+      <input type="password" id="reg-pass" placeholder="كلمة المرور (6 أحرف+)" autocomplete="new-password">
+      <div class="auth-error hidden" id="reg-err"></div>
+      <button class="btn-primary" onclick="doRegister()">إنشاء الحساب</button>
+      <p class="auth-switch">عندك حساب؟ <span onclick="toggleAuthForm('login')">سجل دخول</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- ======== LOBBY ======== -->
+<div class="screen" id="s-lobby">
+  <div class="lobby-top">
+    <div class="user-info-bar" id="user-info-bar"></div>
+  </div>
+  <div class="lobby-body">
+    <div class="lobby-hero">
+      <div class="hero-icon">🎮</div>
+      <h2>يلا نلعب!</h2>
+    </div>
+    <div class="lobby-cards">
+      <div class="lobby-card" onclick="createRoom()">
+        <div class="lc-icon">✨</div>
+        <div>
+          <div class="lc-title">غرفة جديدة</div>
+          <div class="lc-sub">أنشئ وشارك الكود</div>
+        </div>
+        <div class="lc-arrow">›</div>
+      </div>
+      <div class="lobby-card" onclick="showJoin()">
+        <div class="lc-icon">🔑</div>
+        <div>
+          <div class="lc-title">انضم لغرفة</div>
+          <div class="lc-sub">أدخل كود حبيبتك</div>
+        </div>
+        <div class="lc-arrow">›</div>
+      </div>
+      <div class="lobby-card" onclick="goProfile()">
+        <div class="lc-icon">🏆</div>
+        <div>
+          <div class="lc-title">ملفي الشخصي</div>
+          <div class="lc-sub">نقاطي وشاراتي</div>
+        </div>
+        <div class="lc-arrow">›</div>
+      </div>
+    </div>
+    <div class="join-form hidden" id="join-form">
+      <input type="text" id="join-code" placeholder="كود الغرفة (5 أحرف)" maxlength="5" style="text-align:center;letter-spacing:4px;text-transform:uppercase;font-size:20px">
+      <button class="btn-primary" onclick="joinRoom()">انضم</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======== WAITING ======== -->
+<div class="screen" id="s-wait">
+  <div class="wait-content">
+    <div class="wait-anim">
+      <div class="wait-heart">💜</div>
+    </div>
+    <h2>في انتظار حبيبتك</h2>
+    <p>شارك هذا الكود معها</p>
+    <div class="code-box" id="code-box"></div>
+    <button class="btn-copy" onclick="copyCode()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+      نسخ الكود
+    </button>
+    <p class="wait-hint">بمجرد انضمامها تبدأ الألعاب 🎮</p>
+    <button class="btn-ghost" onclick="goLobby()">← رجوع</button>
+  </div>
+</div>
+
+<!-- ======== PROFILE ======== -->
+<div class="screen" id="s-profile">
+  <div class="profile-header">
+    <button class="btn-back-top" onclick="goLobby()">←</button>
+    <h2>ملفي</h2>
+    <button class="btn-logout" onclick="logout()">خروج</button>
+  </div>
+  <div class="profile-body" id="profile-body"></div>
+</div>
+
+<!-- ======== MAIN GAME ======== -->
+<div class="screen" id="s-game">
+  <!-- TOP BAR -->
+  <div class="game-topbar" id="game-topbar"></div>
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" id="tab-games" onclick="switchTab('games')">🎮 ألعاب</button>
+    <button class="tab" id="tab-chat" onclick="switchTab('chat')">
+      💬 شات
+      <span class="chat-dot hidden" id="chat-dot"></span>
+    </button>
+  </div>
+  <!-- TAB CONTENTS -->
+  <div class="tab-pane active" id="pane-games">
+    <!-- GAME MENU -->
+    <div id="game-menu" class="game-menu">
+      <div class="gm-section">تنافسي</div>
+      <div class="gm-item" onclick="openGame('quiz')">
+        <div class="gm-icon">🧠</div>
+        <div class="gm-info"><div class="gm-name">اختبار ثقافي</div><div class="gm-sub">10 أسئلة، من يجاوب أسرع</div></div>
+        <div class="gm-badge challenge">تنافس</div>
+      </div>
+      <div class="gm-item" onclick="openGame('million')">
+        <div class="gm-icon">💰</div>
+        <div class="gm-info"><div class="gm-name">من سيربح المليون</div><div class="gm-sub">11 سؤال، 3 أوراق مساعدة</div></div>
+        <div class="gm-badge challenge">تنافس</div>
+      </div>
+      <div class="gm-item" onclick="openGame('uno')">
+        <div class="gm-icon">🃏</div>
+        <div class="gm-info"><div class="gm-name">UNO</div><div class="gm-sub">لعبة الورق الكلاسيكية</div></div>
+        <div class="gm-badge challenge">تنافس</div>
+      </div>
+      <div class="gm-section">تعاوني</div>
+      <div class="gm-item" onclick="openGame('drawing')">
+        <div class="gm-icon">🎨</div>
+        <div class="gm-info"><div class="gm-name">رسم وخمّن</div><div class="gm-sub">ارسم والثاني يخمن</div></div>
+        <div class="gm-badge coop">تعاون</div>
+      </div>
+      <div class="gm-item" onclick="openGame('truth_dare')">
+        <div class="gm-icon">🔥</div>
+        <div class="gm-info"><div class="gm-name">حقيقة أو جرأة</div><div class="gm-sub">اكتشفوا بعض أكثر</div></div>
+        <div class="gm-badge special">خاص</div>
+      </div>
+    </div>
+
+    <!-- QUIZ AREA -->
+    <div class="game-area hidden" id="area-quiz">
+      <div class="ga-header">
+        <button class="btn-back" onclick="backMenu()">←</button>
+        <span class="ga-title">🧠 اختبار ثقافي</span>
+        <span class="ga-prog" id="q-prog">0/10</span>
+      </div>
+      <div id="quiz-lobby" class="ga-lobby">
+        <p>اختر مستوى الصعوبة</p>
+        <div class="diff-btns">
+          <button onclick="startQuiz('easy')">سهل 🟢</button>
+          <button onclick="startQuiz('medium')">متوسط 🟡</button>
+          <button onclick="startQuiz('hard')">صعب 🔴</button>
+        </div>
+      </div>
+      <div id="quiz-play" class="ga-play hidden">
+        <div class="quiz-scores-bar">
+          <span id="qsb-me">أنا: 0</span>
+          <span id="qsb-them">هو/هي: 0</span>
+        </div>
+        <div class="quiz-card" id="quiz-card">
+          <div class="quiz-q" id="quiz-q-text"></div>
+          <div class="quiz-opts" id="quiz-opts"></div>
+          <div class="quiz-feedback hidden" id="quiz-fb"></div>
+        </div>
+        <div class="opponent-status" id="opp-status"></div>
+      </div>
+      <div id="quiz-end" class="ga-end hidden">
+        <div class="end-top" id="quiz-end-top"></div>
+        <div class="end-actions">
+          <button class="btn-primary" onclick="startQuiz('medium')">جولة جديدة</button>
+          <button class="btn-ghost" onclick="backMenu()">القائمة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MILLION AREA -->
+    <div class="game-area hidden" id="area-million">
+      <div class="ga-header">
+        <button class="btn-back" onclick="backMenu()">←</button>
+        <span class="ga-title">💰 من سيربح المليون</span>
+        <span class="ga-prog" id="m-prog">1/11</span>
+      </div>
+      <div id="million-lobby" class="ga-lobby">
+        <p>لعبة واحد يجاوب والثاني يشجع!<br>عندك 3 أوراق مساعدة 🃏</p>
+        <button class="btn-primary" onclick="socket.emit('start_million')">ابدأ</button>
+      </div>
+      <div id="million-play" class="ga-play hidden">
+        <div class="million-prize" id="m-prize">1,000 ريال</div>
+        <div class="million-q" id="million-q"></div>
+        <div class="million-opts" id="million-opts"></div>
+        <div class="million-lifelines hidden" id="million-ll">
+          <button class="ll-btn" id="ll-fifty" onclick="useLifeline('fifty')">50:50</button>
+          <button class="ll-btn" id="ll-audience" onclick="useLifeline('audience')">الجمهور</button>
+          <button class="ll-btn" id="ll-call" onclick="useLifeline('call')">اتصل</button>
+        </div>
+        <div class="million-spectator hidden" id="million-spec">
+          <p>🎤 أنت المشجع! شجع شريكك</p>
+        </div>
+      </div>
+      <div id="million-end" class="ga-end hidden">
+        <div id="million-end-content"></div>
+        <div class="end-actions">
+          <button class="btn-primary" onclick="socket.emit('start_million')">جولة جديدة</button>
+          <button class="btn-ghost" onclick="backMenu()">القائمة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- UNO AREA -->
+    <div class="game-area hidden" id="area-uno">
+      <div class="ga-header">
+        <button class="btn-back" onclick="backMenu()">←</button>
+        <span class="ga-title">🃏 UNO</span>
+        <span class="ga-prog" id="uno-opp-count">بطاقات الخصم: 7</span>
+      </div>
+      <div id="uno-lobby" class="ga-lobby">
+        <p>لعبة UNO الكلاسيكية 🃏<br>من يخلص بطاقاته أولاً يفوز!</p>
+        <button class="btn-primary" onclick="socket.emit('start_uno')">ابدأ اللعبة</button>
+      </div>
+      <div id="uno-play" class="ga-play hidden">
+        <div class="uno-table">
+          <div class="uno-top-info">
+            <span id="uno-turn-label">...</span>
+            <div class="uno-color-ind" id="uno-color-ind"></div>
+          </div>
+          <div class="uno-top-card-wrap">
+            <div class="uno-card top-card" id="uno-top"></div>
+          </div>
+          <button class="draw-btn" id="draw-btn" onclick="socket.emit('uno_draw')">سحب بطاقة</button>
+        </div>
+        <div class="uno-hand" id="uno-hand"></div>
+        <div class="uno-wild-pick hidden" id="uno-wild-pick">
+          <p>اختر اللون</p>
+          <div class="color-btns">
+            <button class="color-btn" style="background:#e74c3c" onclick="playWild('red')">أحمر</button>
+            <button class="color-btn" style="background:#3498db" onclick="playWild('blue')">أزرق</button>
+            <button class="color-btn" style="background:#2ecc71" onclick="playWild('green')">أخضر</button>
+            <button class="color-btn" style="background:#f1c40f" onclick="playWild('yellow')">أصفر</button>
+          </div>
+        </div>
+      </div>
+      <div id="uno-end" class="ga-end hidden">
+        <div id="uno-end-content"></div>
+        <div class="end-actions">
+          <button class="btn-primary" onclick="socket.emit('start_uno')">جولة جديدة</button>
+          <button class="btn-ghost" onclick="backMenu()">القائمة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DRAWING AREA -->
+    <div class="game-area hidden" id="area-drawing">
+      <div class="ga-header">
+        <button class="btn-back" onclick="backMenu()">←</button>
+        <span class="ga-title">🎨 رسم وخمّن</span>
+        <span id="draw-role-badge"></span>
+      </div>
+      <div id="drawing-lobby" class="ga-lobby">
+        <p>واحد يرسم والثاني يخمن!<br>من يخمن يكسب نقاط 🏆</p>
+        <div class="diff-btns">
+          <button onclick="socket.emit('start_drawing',{difficulty:'easy'})">سهل</button>
+          <button onclick="socket.emit('start_drawing',{difficulty:'medium'})">متوسط</button>
+          <button onclick="socket.emit('start_drawing',{difficulty:'hard'})">صعب</button>
+        </div>
+      </div>
+      <div id="drawing-play" class="ga-play hidden">
+        <div class="canvas-wrap">
+          <canvas id="draw-canvas" width="340" height="280"></canvas>
+        </div>
+        <div class="draw-tools hidden" id="draw-tools">
+          <div class="tool-colors">
+            <div class="tc" style="background:#000" onclick="setColor('#000')"></div>
+            <div class="tc" style="background:#e74c3c" onclick="setColor('#e74c3c')"></div>
+            <div class="tc" style="background:#3498db" onclick="setColor('#3498db')"></div>
+            <div class="tc" style="background:#2ecc71" onclick="setColor('#2ecc71')"></div>
+            <div class="tc" style="background:#f1c40f" onclick="setColor('#f1c40f')"></div>
+            <div class="tc" style="background:#fff;border:1px solid #ccc" onclick="setColor('#fff')"></div>
+          </div>
+          <div class="tool-sizes">
+            <button onclick="setSize(3)">S</button>
+            <button onclick="setSize(8)">M</button>
+            <button onclick="setSize(16)">L</button>
+            <button onclick="socket.emit('draw_clear');clearCanvas()">🗑️</button>
+          </div>
+        </div>
+        <div class="draw-word-banner hidden" id="draw-word-banner"></div>
+        <div class="draw-guess-area hidden" id="draw-guess-area">
+          <input type="text" id="draw-guess-inp" placeholder="خمّن الرسمة..." autocomplete="off">
+          <button class="btn-primary" onclick="sendDrawGuess()">إرسال</button>
+          <p id="draw-guess-fb" class="guess-fb"></p>
+        </div>
+      </div>
+      <div id="drawing-end" class="ga-end hidden">
+        <div id="drawing-end-content"></div>
+        <div class="end-actions">
+          <button class="btn-primary" onclick="socket.emit('start_drawing',{difficulty:'medium'})">جولة جديدة</button>
+          <button class="btn-ghost" onclick="backMenu()">القائمة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRUTH OR DARE AREA -->
+    <div class="game-area hidden" id="area-truth_dare">
+      <div class="ga-header">
+        <button class="btn-back" onclick="backMenu()">←</button>
+        <span class="ga-title">🔥 حقيقة أو جرأة</span>
+      </div>
+      <div id="td-lobby" class="ga-lobby">
+        <p>لعبة رومانسية ممتعة 💕<br>اكتشفوا بعض أكثر!</p>
+        <button class="btn-primary" onclick="socket.emit('start_truth_dare')">ابدأ</button>
+      </div>
+      <div id="td-play" class="ga-play hidden">
+        <div class="td-turn-banner" id="td-turn"></div>
+        <div class="td-choice hidden" id="td-choice">
+          <button class="td-btn truth" onclick="socket.emit('pick_truth_dare',{choice:'truth'})">
+            <span>🤔</span> حقيقة
+          </button>
+          <button class="td-btn dare" onclick="socket.emit('pick_truth_dare',{choice:'dare'})">
+            <span>🔥</span> جرأة
+          </button>
+        </div>
+        <div class="td-card hidden" id="td-card">
+          <div class="td-card-inner" id="td-card-inner"></div>
+          <button class="btn-primary" onclick="socket.emit('next_turn_td')">التالي ›</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CHAT PANE -->
+  <div class="tab-pane" id="pane-chat">
+    <div class="chat-msgs" id="chat-msgs"></div>
+    <div class="chat-bar">
+      <input class="chat-inp" id="chat-inp" placeholder="رسالة..." maxlength="200" onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="chat-send" onclick="sendChat()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- BADGE TOAST -->
+<div class="badge-toast hidden" id="badge-toast"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
